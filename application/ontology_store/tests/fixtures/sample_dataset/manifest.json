@@ -1,0 +1,14 @@
+{
+  "name": "competency-sample",
+  "version": "1.0.0",
+  "source": "synthetic fixture modelled on the ESCO and FGR examples in the service DTOs",
+  "description": "Small canonical dataset used by the tests and the demo",
+  "files": {
+    "entities": "entities.jsonl",
+    "relationships": "relationships.jsonl"
+  },
+  "record_counts": {
+    "entities": 16,
+    "relationships": 19
+  }
+}
