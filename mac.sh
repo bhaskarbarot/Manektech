@@ -69,3 +69,13 @@ echo "Setup, tests and demo finished successfully."
 echo "Run the demo again:  .venv/bin/python -m ontology_store.demo --model $MODEL"
 echo "Run the tests again: .venv/bin/pytest"
 echo "Stop the database:   docker compose down"
+
+step "Starting the test UI (Streamlit)"
+if "$VENV_PY" -m pip install --quiet -e ".[dev,ui]"; then
+  echo "The UI opens in your browser at http://localhost:8501"
+  echo "Press Ctrl+C to stop the UI. Start it again later: .venv/bin/python -m streamlit run ui/app.py"
+  (sleep 6; open http://localhost:8501 >/dev/null 2>&1 || true) &
+  EMBEDDING_MODEL="$MODEL" exec "$VENV_PY" -m streamlit run ui/app.py
+else
+  echo "WARNING: could not install Streamlit, the UI was skipped. Setup, tests and demo above are still fine."
+fi

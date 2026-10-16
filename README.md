@@ -54,9 +54,11 @@ The script does everything in order and stops with a clear message if something 
 6. creates the database schema with Alembic
 7. runs the test suite (64 tests)
 8. runs the demo: loads the sample dataset and runs one query of each type
+9. installs Streamlit and opens a small test UI in your browser at http://localhost:8501 (press Ctrl+C to stop it)
 
 The first run takes about 3 to 5 minutes, most of it downloading the embedding model.
 Running the script again is safe and much faster.
+The UI step comes after the success message, so if it cannot start, the setup, tests and demo results above are still valid.
 
 **How to know it worked:** the tests line says `64 passed`, the demo prints results for sections 1 to 11, and the
 last lines say `Setup, tests and demo finished successfully.` In the demo, vector search for
@@ -72,10 +74,28 @@ After the script, these work directly:
 ```bash
 .venv/bin/python -m ontology_store.demo --model st
 .venv/bin/pytest
+.venv/bin/python -m streamlit run ui/app.py
 docker compose down
 ```
 
-(on Windows: `.venv\Scripts\python -m ontology_store.demo --model st`, `.venv\Scripts\pytest`)
+(on Windows: `.venv\Scripts\python -m ontology_store.demo --model st`, `.venv\Scripts\pytest`,
+`.venv\Scripts\python -m streamlit run ui\app.py`)
+
+## Test UI
+
+A small Streamlit page (`ui/app.py`) to try the store by hand. It uses the same database and embedding model as the demo,
+and loads the sample dataset by itself if the database is empty.
+
+| Tab | What you can do |
+|---|---|
+| Search | type any text, run literal search, vector search or both side by side, filter by class and framework |
+| Entity explorer | pick an entity, see its details, outgoing links (e.g. competencies an occupation requires) and neighbours |
+| Browse | page through all entities with class and framework filters |
+
+Try `leidinggeven aan een team` in Search: literal search finds nothing (the words do not appear in the data), vector
+search finds `leiderschap` by meaning. If the page says it cannot connect, start the database with
+`docker compose up -d --wait` and reload. Streamlit is an optional extra (`pip install -e ".[ui]"`); the store and tests
+do not depend on it.
 
 **If something goes wrong**
 
@@ -128,8 +148,9 @@ Postgres runs on port 5433 so it does not clash with a local install. Tests use 
 ## Layout
 
 ```
-linux.sh, mac.sh, windows.bat       one-command setup + tests + demo
+linux.sh, mac.sh, windows.bat       one-command setup + tests + demo + test UI
 docker-compose.yml                  PostgreSQL 16 + pgvector
+ui/app.py, .streamlit/              small Streamlit test UI (optional extra "ui")
 application/
 ├── ontology_service/data_models/   existing DTOs, unchanged
 └── ontology_store/
@@ -161,6 +182,7 @@ application/
 | CompetencyService search / browse / query / add / delete using the existing DTOs | real |
 | vacancy skill extraction | not built, needs the LLM prompt and the current code |
 | HTTP layer | not built, the services return the DTOs so a FastAPI router is thin |
+| Streamlit test UI | real, a thin page over the store for manual testing, not a product UI |
 
 ## Demo output
 

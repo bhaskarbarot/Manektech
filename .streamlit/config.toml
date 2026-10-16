@@ -1,0 +1,6 @@
+[server]
+# no first-run email prompt; the setup scripts open the browser themselves
+headless = true
+
+[browser]
+gatherUsageStats = false

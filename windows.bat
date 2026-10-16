@@ -95,7 +95,22 @@ echo Setup, tests and demo finished successfully.
 echo Run the demo again:  .venv\Scripts\python -m ontology_store.demo --model %MODEL%
 echo Run the tests again: .venv\Scripts\pytest
 echo Stop the database:   docker compose down
-pause
+
+echo.
+echo ==^> Starting the test UI (Streamlit)
+"%VENV_PY%" -m pip install --quiet -e ".[dev,ui]"
+if errorlevel 1 (
+  echo WARNING: could not install Streamlit, the UI was skipped. Setup, tests and demo above are still fine.
+  pause
+  exit /b 0
+)
+set "EMBEDDING_MODEL=%MODEL%"
+echo The UI opens in your browser at http://localhost:8501
+echo Press Ctrl+C in this window to stop the UI.
+echo Start it again later: .venv\Scripts\python -m streamlit run ui\app.py
+start "" /b cmd /c "ping -n 7 127.0.0.1 >nul && start http://localhost:8501"
+"%VENV_PY%" -m streamlit run ui\app.py
+if errorlevel 1 pause
 exit /b 0
 
 :fail
