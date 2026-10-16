@@ -1,4 +1,4 @@
-## Bhaskar's Presentation : Loom link 
+## Bhaskar's Presentation : https://www.loom.com/share/563572af5da547e69acc574dc3a3cdad
 # Ontology Store
 
 Prototype of the ontology store refactor described in `application/ontology_service/Task.md`.
